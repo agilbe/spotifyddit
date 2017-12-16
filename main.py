@@ -1,6 +1,7 @@
 from secrets import CLIENT_ID, CLIENT_SECRET
 GRANT_TYPE = 'authorization_code'
 RED_URI = 'http://localhost:8080/'
+NUM_CHARS = 15
 
 
 
@@ -335,16 +336,14 @@ class PlaylistHandler(BaseHandler):
         template = JINJA_ENVIRONMENT.get_template('response.html')
         user = self.current_user
         articlename = self.request.params.get('articlename')
-        tvals = {'current_user':user, 'articlename':articlename}
+        tvals = {'current_user':user, 'articlename':articlename, 'num_chars':NUM_CHARS}
         songlist = self.request.params.getall('song') # a list of the song uris
 
         
-        #now that we have the list of songs, we make the playlist and add the songs in
+
         addplaylisturl = "https://api.spotify.com/v1/users/%s/playlists"%user.uid
-        ## in the future, should make this more robust so it checks if the access_token
-        ## is still valid and retrieves a new one using refresh_token if not
-        #paramsstring = "{\"name\":\"A New Playlist\", \"public\":false}"
-        params = json.dumps({"name": "reddit: " + articlename[:10] + "...", "public":"false"})
+        
+        params = json.dumps({"name": "reddit: " + articlename[:NUM_CHARS] + "...", "public":"false"})
         responsep = Playlist(json.loads(spotifyurlfetch(addplaylisturl,user.access_token, params=params, method=urlfetch.POST)))
         tvals['playlist'] = responsep
         playlistid = responsep.id
