@@ -191,63 +191,62 @@ class HomeHandler(BaseHandler):
         tvals = {'current_user':user}
         if user != None:
             logging.info("REFRESH")
-            # url = "https://api.spotify.com/v1/users/%s/playlists?limit=25"%user.uid
-            # ## in the future, should make this more robust so it checks if the access_token
-            # ## is still valid and retrieves a new one using refresh_token if not
-            # #params = json.dumps({"limit":50})
-            # response = json.loads(spotifyurlfetch(url,user.access_token))
-            try:
-                #tvals["playlists"]=[Playlist(item) for item in response["items"]]
-                #logging.info(len(tvals["playlists"]))
+            url = "https://api.spotify.com/v1/users/%s/playlists?limit=25"%user.uid
+            ## in the future, should make this more robust so it checks if the access_token
+            ## is still valid and retrieves a new one using refresh_token if not
+            #params = json.dumps({"limit":50})
+            response = json.loads(spotifyurlfetch(url,user.access_token))
+            if "items" in response:
+                tvals["playlists"]=[Playlist(item) for item in response["items"]]
+                logging.info(len(tvals["playlists"]))
                 #grab reddit data
-                testurls = ['https://www.reddit.com/r/EDM/comments/7i22of/show_me_the_best_three_songs_you_know/', 'https://www.reddit.com/r/EDM/comments/6v84qy/best_songs_by_the_best_artists/']
+            testurls = ['https://www.reddit.com/r/EDM/comments/7i22of/show_me_the_best_three_songs_you_know/', 'https://www.reddit.com/r/EDM/comments/6v84qy/best_songs_by_the_best_artists/']
 
-                tvals["error"] = None
-                if self.request.get('butt'): #lol this was supposed to be button
-                    redditurl = testurls[randint(1, len(testurls)) - 1]
-                else:
-                    redditurl = self.request.get('redditinput')
-                if redditurl: #add some sort of checking for url
-                    #if url not valid add tvals["error"] = 'url'?
-                    try: 
-                        htmlstring = safeGet(redditurl)
-                        if htmlstring is not None:
-                            htmlstring = htmlstring.read() #handle http error 429
-                            soup = BeautifulSoup(htmlstring)
-                            #find article title
-                            #articlename = soup.find("a", {"class" : "title may-blank loggedin"}).text if soup.find("a", {"class" : "title may-blank loggedin"}) else soup.find("a", {"class" : "title may-blank "}).text
-                            articlename = soup.find("a", {"class" : "title may-blank "}).text
-                            tvals["articlename"] = articlename
-                            #logging.info(articlename)
-                            songlist = [item['href'].encode('utf-8') for item in soup.findAll('a', href=True) if 'open.spotify.com/track' in item['href']]
-                            #get song id from url and populate list of song instances
-                            newsonglist = [Song(json.loads(spotifyurlfetch('https://api.spotify.com/v1/tracks/' + track.split('?')[0].split('/')[-1], user.access_token))) for track in songlist]
-                            #TODO: add playlist containing each song from newsonglist to user's account
-                            #logging.info(newsonglist)
-                            # for song in newsonglist:
-                            #     logging.info(song.toJSON())
-                            if len (newsonglist):
-                                tvals["results"] = newsonglist
-                        else: 
-                            logging.info("error scraping reddit")
-                            tvals["results"] = None
-                            tvals["error"] = "reddit"
-                    except:
+            tvals["error"] = None
+            if self.request.get('butt'): #lol this was supposed to be button
+                redditurl = testurls[randint(1, len(testurls)) - 1]
+            else:
+                redditurl = self.request.get('redditinput')
+            if redditurl: #add some sort of checking for url
+                #if url not valid add tvals["error"] = 'url'?
+                try: 
+                    htmlstring = safeGet(redditurl)
+                    if htmlstring is not None:
+                        htmlstring = htmlstring.read() #handle http error 429
+                        soup = BeautifulSoup(htmlstring)
+                        #find article title
+                        #articlename = soup.find("a", {"class" : "title may-blank loggedin"}).text if soup.find("a", {"class" : "title may-blank loggedin"}) else soup.find("a", {"class" : "title may-blank "}).text
+                        articlename = soup.find("a", {"class" : "title may-blank "}).text
+                        tvals["articlename"] = articlename
+                        #logging.info(articlename)
+                        songlist = [item['href'].encode('utf-8') for item in soup.findAll('a', href=True) if 'open.spotify.com/track' in item['href']]
+                        #get song id from url and populate list of song instances
+                        newsonglist = [Song(json.loads(spotifyurlfetch('https://api.spotify.com/v1/tracks/' + track.split('?')[0].split('/')[-1], user.access_token))) for track in songlist]
+                        #TODO: add playlist containing each song from newsonglist to user's account
+                        #logging.info(newsonglist)
+                        # for song in newsonglist:
+                        #     logging.info(song.toJSON())
+                        if len (newsonglist):
+                            tvals["results"] = newsonglist
+                    else: 
                         logging.info("error scraping reddit")
                         tvals["results"] = None
-                        tvals["error"] = "redditservers"
-                else: #if no url or improperly formatted
-                    logging.info("error in URL")
+                        tvals["error"] = "reddit"
+                except:
+                    logging.info("error scraping reddit")
                     tvals["results"] = None
-                    #tvals["error"] = "url"
-            except:
-                tvals['error'] = 'inactivity'
-                set_cookie(self.response, "spotify_user", "", expires=time.time() - 86400)
-                self.redirect("/")
-                #log out user here?
-                logging.info("error with logging in - fix this")
+                    tvals["error"] = "redditservers"
+            else: #if no url or improperly formatted
+                logging.info("error in URL")
+                tvals["results"] = None
+                #tvals["error"] = "url"
         else:
             logging.info("NO USER")
+            tvals['error'] = 'inactivity'
+            set_cookie(self.response, "spotify_user", "", expires=time.time() - 86400)
+            self.redirect("/")
+            #log out user here?
+            logging.info("error with logging in - fix this")
         
         self.response.write(template.render(tvals)) 
 
