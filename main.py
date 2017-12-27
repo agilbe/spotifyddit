@@ -1,8 +1,7 @@
 from secrets import CLIENT_ID, CLIENT_SECRET
 GRANT_TYPE = 'authorization_code'
 RED_URI = 'http://localhost:8080/'
-NUM_CHARS = 35
-
+NUM_CHARS = 45
 
 
 import webapp2, urllib2, os, urllib, json, jinja2, logging, sys, time
@@ -221,12 +220,12 @@ class HomeHandler(BaseHandler):
                         articlename = soupdata.text
                         #fix subredditname, for now leaving it as "reddit:"
                         srname = "reddit"
-                        logging.info("SRNAME:")
-                        logging.info(srname)
-                        logging.info(article)
-                        tvals["articlename"] = articlename
+                        for attr, item in soupdata.attrs:
+                            if attr == 'href' and '/r/' in item:
+                                srname = "r/" + item.split('/r/')[1].split('/')[0] #lmao
+
                         tvals["srname"] = srname
-                        #logging.info(articlename)
+                        tvals["articlename"] = articlename
                         songlist = [item['href'].encode('utf-8') for item in soup.findAll('a', href=True) if 'open.spotify.com/track' in item['href']]
                         #get song id from url and populate list of song instances
                         newsonglist = [Song(json.loads(spotifyurlfetch('https://api.spotify.com/v1/tracks/' + track.split('?')[0].split('/')[-1], user.access_token))) for track in songlist]
