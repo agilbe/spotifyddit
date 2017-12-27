@@ -12,10 +12,10 @@
       <div id="pagediv">  
         <div id="searchdiv">
           <form id="searchbox" method="get" action="" name="search">
-            <label for="lat">paste a reddit url: </label><input type="text" id="redditinput" name="redditinput"/>
+            <label for="lat">paste a reddit thread url: </label><input type="text" id="redditinput" name="redditinput"/>
             <input type="submit" value="Search" name="submit" />
           </form> 
-          OR
+          or
           <form id="randbox" method="get" action="" name="randomform">
             <input type="submit" value="Try Me" name="butt" />
           </form>
@@ -32,7 +32,7 @@
             <div id="songdiv">
               {% for song in results %}
               <div class="previewdiv">
-              <input type="checkbox" name="song" value="{{song.uri}}" checked><span class="previewsong"><a href="{{song.external_urls.spotify}}">{{song.name}}</a> by 
+              <input type="checkbox" name="song" value="{{song.uri}}" class="styled-checkbox" id="checkbox{{loop.index}}" checked><label for="checkbox{{loop.index}}"><span class="previewsong"><a href="{{song.external_urls.spotify}}">{{song.name}}</a> by 
                   {% for artist in song.artists %}
                       {% if song.artists|length == 1 %}
                         <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>
@@ -42,7 +42,7 @@
                       <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>, 
                       {% endif %}
                     {% endfor %}
-                    || <span class="previewurl"><a class="preview" store="{{song.preview_url}}" href="javascript:;">Preview</a></span></span>
+                    || <span class="previewurl"><a class="preview" store="{{song.preview_url}}" href="javascript:;">Preview</a></span></span></label>
                 <br/>
               </div>
               {% endfor %}
