@@ -191,16 +191,17 @@ class HomeHandler(BaseHandler):
         user = self.current_user
         tvals = {'current_user':user, 'app_name': APP_NAME}
         if user != None:
-            logging.info("REFRESH")
-            url = "https://api.spotify.com/v1/users/%s/playlists?limit=25"%user.uid
+            
+            # IF I NEED PLAYLISTS
+            # url = "https://api.spotify.com/v1/users/%s/playlists?limit=25"%user.uid
             ## in the future, should make this more robust so it checks if the access_token
             ## is still valid and retrieves a new one using refresh_token if not
-            #params = json.dumps({"limit":50})
-            response = json.loads(spotifyurlfetch(url,user.access_token))
-            if "items" in response:
-                tvals["playlists"]=[Playlist(item) for item in response["items"]]
-                logging.info(len(tvals["playlists"]))
-                #grab reddit data
+            # response = json.loads(spotifyurlfetch(url,user.access_token))
+            # if "items" in response:
+            #     tvals["playlists"]=[Playlist(item) for item in response["items"]]
+            #     logging.info(len(tvals["playlists"]))
+            #     #grab reddit data
+            
             testurls = ['https://www.reddit.com/r/EDM/comments/7i22of/show_me_the_best_three_songs_you_know/', 'https://www.reddit.com/r/EDM/comments/6v84qy/best_songs_by_the_best_artists/']
 
             tvals["error"] = None
@@ -215,11 +216,8 @@ class HomeHandler(BaseHandler):
                     if htmlstring is not None:
                         htmlstring = htmlstring.read() #handle http error 429
                         soup = BeautifulSoup(htmlstring)
-                        #find article title
-                        #articlename = soup.find("a", {"class" : "title may-blank loggedin"}).text if soup.find("a", {"class" : "title may-blank loggedin"}) else soup.find("a", {"class" : "title may-blank "}).text
                         soupdata = soup.find("a", {"class" : "title may-blank "})
                         articlename = soupdata.text
-                        #fix subredditname, for now leaving it as "reddit:"
                         srname = "reddit"
                         srlink = "-Created with " + APP_NAME + "- "
                         for attr, item in soupdata.attrs:
@@ -239,7 +237,7 @@ class HomeHandler(BaseHandler):
                         tvals["results"] = None
                         tvals["error"] = "reddit"
                 except:
-                    logging.info("reddit could be down or could have error in my code")
+                    logging.info("reddit could be down or could be an error in my code, who knows?")
                     tvals["results"] = None
                     tvals["error"] = "redditservers"
             else: #if no url or improperly formatted
@@ -347,16 +345,11 @@ class PlaylistHandler(BaseHandler):
         if len(articlename) > NUM_CHARS:
             articlename = articlename[:NUM_CHARS] + "..."
         srlink = self.request.params.get('srlink')
-
-        #probably don't need num_chars anymore after shortening articlename
-        tvals = {'current_user':user, 'app_name':APP_NAME, 'articlename':articlename, 'srname':srname, 'num_chars':NUM_CHARS}
+        tvals = {'current_user':user, 'app_name':APP_NAME, 'articlename':articlename, 'srname':srname}
         songlist = self.request.params.getall('song') # a list of the song uris
 
-        
-
         addplaylisturl = "https://api.spotify.com/v1/users/%s/playlists"%user.uid
-
-        params = json.dumps({"name": srname + ": " + articlename, "description": srlink,"public":"true"})
+        params = json.dumps({"name": srname + ": " + articlename, "description": srlink})
         responsep = Playlist(json.loads(spotifyurlfetch(addplaylisturl,user.access_token, params=params, method=urlfetch.POST)))
         tvals['playlist'] = responsep
         playlistid = responsep.id
