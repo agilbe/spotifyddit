@@ -1,7 +1,7 @@
 from secrets import CLIENT_ID, CLIENT_SECRET
 GRANT_TYPE = 'authorization_code'
 RED_URI = 'http://localhost:8080/'
-NUM_CHARS = 15
+NUM_CHARS = 35
 
 
 
@@ -217,8 +217,15 @@ class HomeHandler(BaseHandler):
                         soup = BeautifulSoup(htmlstring)
                         #find article title
                         #articlename = soup.find("a", {"class" : "title may-blank loggedin"}).text if soup.find("a", {"class" : "title may-blank loggedin"}) else soup.find("a", {"class" : "title may-blank "}).text
-                        articlename = soup.find("a", {"class" : "title may-blank "}).text
+                        soupdata = soup.find("a", {"class" : "title may-blank "})
+                        articlename = soupdata.text
+                        #fix subredditname, for now leaving it as "reddit:"
+                        srname = "reddit"
+                        logging.info("SRNAME:")
+                        logging.info(srname)
+                        logging.info(article)
                         tvals["articlename"] = articlename
+                        tvals["srname"] = srname
                         #logging.info(articlename)
                         songlist = [item['href'].encode('utf-8') for item in soup.findAll('a', href=True) if 'open.spotify.com/track' in item['href']]
                         #get song id from url and populate list of song instances
@@ -245,8 +252,10 @@ class HomeHandler(BaseHandler):
             logging.info("NO USER")
             tvals['error'] = 'inactivity'
             set_cookie(self.response, "spotify_user", "", expires=time.time() - 86400)
-            self.redirect("/")
+            
+            #self.redirect("/") #oops if the user isn't logged in this just redirects to "/" infinitely
             #log out user here?
+            
             logging.info("error with logging in - fix this")
         
         self.response.write(template.render(tvals)) 
@@ -326,7 +335,7 @@ class LogoutHandler(BaseHandler):
 '''
 idea: when rendering the songs to the oauth.html template, render them
 directly into a form with radio buttons that the user can then select
-and add to playlist
+and add to playlist DONE
 
 TODO: figure out what i need to grab from each song instance to add it to a playlist
 and send that to the template in HomeHandler NVM i can just send the entire song obj
@@ -336,14 +345,19 @@ class PlaylistHandler(BaseHandler):
         template = JINJA_ENVIRONMENT.get_template('response.html')
         user = self.current_user
         articlename = self.request.params.get('articlename')
-        tvals = {'current_user':user, 'articlename':articlename, 'num_chars':NUM_CHARS}
+        srname = self.request.params.get('srname')
+        if len(articlename) > NUM_CHARS:
+            articlename = articlename[:NUM_CHARS] + "..."
+        
+        #probably don't need num_chars anymore after shortening articlename
+        tvals = {'current_user':user, 'articlename':articlename, 'srname':srname, 'num_chars':NUM_CHARS}
         songlist = self.request.params.getall('song') # a list of the song uris
 
         
 
         addplaylisturl = "https://api.spotify.com/v1/users/%s/playlists"%user.uid
-        
-        params = json.dumps({"name": "reddit: " + articlename[:NUM_CHARS] + "...", "public":"false"})
+
+        params = json.dumps({"name": srname + ": " + articlename, "public":"false"})
         responsep = Playlist(json.loads(spotifyurlfetch(addplaylisturl,user.access_token, params=params, method=urlfetch.POST)))
         tvals['playlist'] = responsep
         playlistid = responsep.id

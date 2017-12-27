@@ -30,18 +30,38 @@ $(function(){
                 player = $('<audio>').attr({
                     'src': $(this).attr("store"),
                     'id': 'previewplayer',
-                    'autoplay':'autoplay',
+                    //'autoplay':'autoplay',
                     'controls':'true',
                     'controlsList':"nodownload",
-                    'volume':0.5
+                    'volume':"0.5"
                 });
 
                 console.log("creating player...");
-                console.log(player);
+
+                //console.log(player);
+                
                 //append player somewhere
                 //for now, player placeholder
-                $('#playerplaceholder').append(player);
 
+                $('#playerplaceholder').append(player);
+                
+                //how can i access player attributes? need to check if the preview has an error
+                //able to access attrs now but it errors out BEFORE metadata is loaded
+                var player = $('#previewplayer')[0];
+
+                player.addEventListener("loadedmetadata", readMetadata);
+                
+                //do i need this? for firefox
+                if (player.readyState >= 2) {
+                    readMetadata();
+                }
+                
+                function readMetadata(){
+                    console.log("Playing for " + player.duration + " seconds.")
+                    player.play();
+                }
+
+                
                 //change text to Pause and then change function to pause
                 $(this).text("Cancel");
             

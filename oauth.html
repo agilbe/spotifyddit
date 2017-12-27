@@ -7,47 +7,60 @@
   </head>
   <body>
     {% if current_user %}
-      <p>You are logged in as {{ current_user.displayname|escape }}.</p>
-
-      <form id="searchbox" method="get" action="" name="search">
-        <label for="lat">paste a reddit url: </label><input type="text" id="redditinput" name="redditinput"/>
-        <input type="submit" value="Search" name="submit" />
-      </form> OR <br /><br /> 
-      <form id="randbox" method="get" action="" name="randomform">
-        <input type="submit" value="Try Me" name="butt" />
-      </form>
-      
-      {%if results %}
-        <p>Songs found are:</p>
+      <div id="userdiv"><p>You are logged in as {{ current_user.displayname|escape }}. <a href="/auth/logout">Log out</a></p>
+      </div>
+      <div id="pagediv">  
+        <div id="searchdiv">
+          <form id="searchbox" method="get" action="" name="search">
+            <label for="lat">paste a reddit url: </label><input type="text" id="redditinput" name="redditinput"/>
+            <input type="submit" value="Search" name="submit" />
+          </form> 
+          OR
+          <form id="randbox" method="get" action="" name="randomform">
+            <input type="submit" value="Try Me" name="butt" />
+          </form>
+        </div>
         
-        <form id="playlistform" method="post" action="createplaylist" name="playlistform">
-        <input id="articlename" name="articlename" type="hidden" value="{{articlename}}">
-        {% for song in results %}
-        <input type="checkbox" name="song" value="{{song.uri}}" checked><span class="previewsong"><a href="{{song.external_urls.spotify}}">{{song.name}}</a> by 
-          {% for artist in song.artists %}
-              {% if song.artists|length == 1 %}
-                <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>
-              {% elif loop.index == song.artists|length %}
-                <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>
-              {% else %}
-              <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>, 
-              {% endif %}
-            {% endfor %}
-            || <span class="previewurl"><a class="preview" store="{{song.preview_url}}" href="javascript:;">Preview</a></span></span>
-        <br/>
-        {% endfor %}
-        <br/>
-        
-          <input type="submit" value="Create Playlist" name="playlistbutt" />
-        </form>
-        <div id="playerplaceholder"></div>
-      {% elif error == "reddit" %}
-      <p>error scraping Reddit for songs, try again!</p>
-      {% elif error == "redditservers" %}
-      <p>Reddit seems to be down, try again later!</p>
-      {% elif error == "url" %}
-        <p>enter a valid URL</p>
-      {% endif %}
+        <div id="resultdiv">
+          {%if results %}
+            <p>Songs found:</p>
+            
+            <form id="playlistform" method="post" action="createplaylist" name="playlistform">
+            <input id="articlename" name="articlename" type="hidden" value="{{articlename}}">
+            <input id="srname" name="srname" type="hidden" value="{{srname}}">
+            
+            <div id="songdiv">
+              {% for song in results %}
+              <div class="previewdiv">
+              <input type="checkbox" name="song" value="{{song.uri}}" checked><span class="previewsong"><a href="{{song.external_urls.spotify}}">{{song.name}}</a> by 
+                  {% for artist in song.artists %}
+                      {% if song.artists|length == 1 %}
+                        <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>
+                      {% elif loop.index == song.artists|length %}
+                        <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>
+                      {% else %}
+                      <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>, 
+                      {% endif %}
+                    {% endfor %}
+                    || <span class="previewurl"><a class="preview" store="{{song.preview_url}}" href="javascript:;">Preview</a></span></span>
+                <br/>
+              </div>
+              {% endfor %}
+              <br/>
+            </div>
+            
+              <input type="submit" value="Create Playlist" name="playlistbutt" />
+            </form>
+            <div id="playerplaceholder"></div>
+          {% elif error == "reddit" %}
+          <p>error scraping Reddit for songs, try again!</p>
+          {% elif error == "redditservers" %}
+          <p>Reddit seems to be down, try again later!</p>
+          {% elif error == "url" %}
+            <p>enter a valid URL</p>
+          {% endif %}
+        </div>
+      </div>
     <!-- {% if playlists %}
       <p>Your playlists are:</p>
     <ul>
@@ -56,13 +69,12 @@
     {% endfor %}
       </ul>
     {% endif %} -->
-      <p><a href="/auth/logout">Log out</a></p>
-    {% elif error == 'inactivity' %}
-      <p>You've been logged out due to inactivity'</p>
-      <p><a href="/auth/login">Log in to Spotify</a></p>
+      
     {% else %}
+    <div id="logindiv">  
       <p>You are not yet logged into this site</p>
       <p><a href="/auth/login">Log in to Spotify</a></p>
+    </div>
     {% endif %}
   </body>
 </html>
