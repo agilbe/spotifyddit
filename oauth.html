@@ -3,16 +3,16 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/main.js"></script>
   <head>
-  <title>Spotifyddit</title>
+  <title>{{app_name}}</title>
   </head>
   <body>
     {% if current_user %}
-      <div id="userdiv"><p>You are logged in as {{ current_user.displayname|escape }}. <a href="/auth/logout">Log out</a></p>
+      <div id="userdiv"><p>Logged in as {{ current_user.displayname|escape }}. <a href="/auth/logout">Log out</a></p>
       </div>
       <div id="pagediv">  
         <div id="searchdiv">
           <form id="searchbox" method="get" action="" name="search">
-            <label for="lat">paste a reddit thread url: </label><input type="text" id="redditinput" name="redditinput"/>
+            <label for="lat">Drop a Reddit thread link here: </label><input type="text" id="redditinput" name="redditinput"/>
             <input type="submit" value="Search" name="submit" />
           </form> 
           or
@@ -28,7 +28,8 @@
             <form id="playlistform" method="post" action="createplaylist" name="playlistform">
             <input id="articlename" name="articlename" type="hidden" value="{{articlename}}">
             <input id="srname" name="srname" type="hidden" value="{{srname}}">
-            
+            <input id="srlink" name="srlink" type="hidden" value="{{srlink}}">
+
             <div id="songdiv">
               {% for song in results %}
               <div class="previewdiv">
@@ -53,9 +54,9 @@
             </form>
             <div id="playerplaceholder"></div>
           {% elif error == "reddit" %}
-          <p>error scraping Reddit for songs, try again!</p>
+          <p>Ran into an error while scraping Reddit for songs, try again!</p>
           {% elif error == "redditservers" %}
-          <p>Reddit seems to be down, try again later!</p>
+          <p>Something went wrong (is Reddit down?). Try again in a bit!</p>
           {% elif error == "url" %}
             <p>enter a valid URL</p>
           {% endif %}

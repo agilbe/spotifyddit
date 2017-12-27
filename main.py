@@ -1,7 +1,8 @@
 from secrets import CLIENT_ID, CLIENT_SECRET
 GRANT_TYPE = 'authorization_code'
 RED_URI = 'http://localhost:8080/'
-NUM_CHARS = 45
+APP_NAME = "Spotifyddit"
+NUM_CHARS = 45 #for playlist name length
 
 
 import webapp2, urllib2, os, urllib, json, jinja2, logging, sys, time
@@ -188,7 +189,7 @@ class HomeHandler(BaseHandler):
         
         # check if they are logged in
         user = self.current_user
-        tvals = {'current_user':user}
+        tvals = {'current_user':user, 'app_name': APP_NAME}
         if user != None:
             logging.info("REFRESH")
             url = "https://api.spotify.com/v1/users/%s/playlists?limit=25"%user.uid
@@ -220,19 +221,17 @@ class HomeHandler(BaseHandler):
                         articlename = soupdata.text
                         #fix subredditname, for now leaving it as "reddit:"
                         srname = "reddit"
+                        srlink = "-Created with " + APP_NAME + "- "
                         for attr, item in soupdata.attrs:
                             if attr == 'href' and '/r/' in item:
                                 srname = "r/" + item.split('/r/')[1].split('/')[0] #lmao
-
+                                srlink += "https://reddit.com" + item
                         tvals["srname"] = srname
+                        tvals["srlink"] = srlink
                         tvals["articlename"] = articlename
                         songlist = [item['href'].encode('utf-8') for item in soup.findAll('a', href=True) if 'open.spotify.com/track' in item['href']]
                         #get song id from url and populate list of song instances
                         newsonglist = [Song(json.loads(spotifyurlfetch('https://api.spotify.com/v1/tracks/' + track.split('?')[0].split('/')[-1], user.access_token))) for track in songlist]
-                        #TODO: add playlist containing each song from newsonglist to user's account
-                        #logging.info(newsonglist)
-                        # for song in newsonglist:
-                        #     logging.info(song.toJSON())
                         if len (newsonglist):
                             tvals["results"] = newsonglist
                     else: 
@@ -240,7 +239,7 @@ class HomeHandler(BaseHandler):
                         tvals["results"] = None
                         tvals["error"] = "reddit"
                 except:
-                    logging.info("error scraping reddit")
+                    logging.info("reddit could be down or could have error in my code")
                     tvals["results"] = None
                     tvals["error"] = "redditservers"
             else: #if no url or improperly formatted
@@ -347,16 +346,17 @@ class PlaylistHandler(BaseHandler):
         srname = self.request.params.get('srname')
         if len(articlename) > NUM_CHARS:
             articlename = articlename[:NUM_CHARS] + "..."
-        
+        srlink = self.request.params.get('srlink')
+
         #probably don't need num_chars anymore after shortening articlename
-        tvals = {'current_user':user, 'articlename':articlename, 'srname':srname, 'num_chars':NUM_CHARS}
+        tvals = {'current_user':user, 'app_name':APP_NAME, 'articlename':articlename, 'srname':srname, 'num_chars':NUM_CHARS}
         songlist = self.request.params.getall('song') # a list of the song uris
 
         
 
         addplaylisturl = "https://api.spotify.com/v1/users/%s/playlists"%user.uid
 
-        params = json.dumps({"name": srname + ": " + articlename, "public":"false"})
+        params = json.dumps({"name": srname + ": " + articlename, "description": srlink,"public":"true"})
         responsep = Playlist(json.loads(spotifyurlfetch(addplaylisturl,user.access_token, params=params, method=urlfetch.POST)))
         tvals['playlist'] = responsep
         playlistid = responsep.id

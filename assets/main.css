@@ -1,3 +1,8 @@
+audio {
+    /*CHANGE THIS TO SHOW THE PLAYER*/
+    display: none
+}
+
 body {
     background-color: #373737;
     color: #999999
