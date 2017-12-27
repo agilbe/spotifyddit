@@ -85,7 +85,7 @@ class Playlist:
 
 class Song:
     def __init__(self, trackdict):
-        #self.album = Album(trackdict['album'])
+        self.album = Album(trackdict['album'])
         #self.artists = trackdict['artists']
         self.artists = [Artist(item) for item in trackdict['artists']]
         self.href = trackdict['href']
