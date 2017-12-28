@@ -245,6 +245,7 @@ class HomeHandler(BaseHandler):
                     logging.info("reddit could be down or could be an error in my code, who knows?")
                     tvals["results"] = None
                     tvals["error"] = "redditservers"
+                    tvals["tryagain"] = redditurl
             else: #if no url or improperly formatted
                 logging.info("error in URL")
                 tvals["results"] = None
