@@ -17,7 +17,7 @@ $(function(){
                     //it already exists/is open
                     $("#previewplayer").remove();
                     //set all to "Preview"
-                    $(".previewurl").text("Preview")
+                    $(".previewurl").text("PREVIEW")
                 }
                 
 
@@ -62,7 +62,7 @@ $(function(){
 
                 
                 //change text to Pause and then change function to pause
-                $(this).text("Cancel");
+                $(this).text("CANCEL");
                 //can't change color when clicked, otherwise you lose the ability to change link hover/click color, etc.
                 //TODO: add some way to make the "Cancel" more noticeable
             
@@ -70,7 +70,7 @@ $(function(){
             } else {
                 console.log("removing player...")
                 $("#previewplayer").remove();
-                $(this).text("Preview");
+                $(this).text("PREVIEW");
             }
         
         });

@@ -33,7 +33,7 @@
             <div id="songdiv">
               {% for song in results %}
               <div class="previewdiv">
-              <input type="checkbox" name="song" value="{{song.uri}}" class="styled-checkbox" id="checkbox{{loop.index}}" checked><label for="checkbox{{loop.index}}"><span class="previewsong"><a href="{{song.external_urls.spotify}}">{{song.name}}</a> by 
+                  <span class="previewsong"><input type="checkbox" name="song" value="{{song.uri}}" class="styled-checkbox" id="checkbox{{loop.index}}" checked><label for="checkbox{{loop.index}}"><a href="{{song.external_urls.spotify}}">{{song.name}}</a> by 
                   {% for artist in song.artists %}
                       {% if song.artists|length == 1 %}
                         <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>
@@ -43,7 +43,7 @@
                       <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>, 
                       {% endif %}
                     {% endfor %}
-                  </label>|| <span class="previewurl fakelink" store="{{song.preview_url}}">Preview</span></span>
+                  </span></label><div class="previewclick">  <span class="previewurl fakelink" store="{{song.preview_url}}">PREVIEW</span></div>
                 <br/>
               </div>
               {% endfor %}

@@ -5,7 +5,8 @@ audio {
 
 body {
     background-color: #373737;
-    color: #999999
+    color: #999999;
+    margin: 0 auto;
 }
 
 a:link, .fakelink {
@@ -33,17 +34,32 @@ a:hover {
     color: lightgreen
 }
 
+.previewclick {
+    float: right;
+}
+
+.previewsong {
+    display: inline-block;
+    width: 70%;
+}
+
 #userdiv {
     float: right;
 }
 
+#resultdiv, #searchdiv {
+    max-width: 100%;
+}
+
 #pagediv, #logindiv, #playlistdiv {
-    padding: 25vh;
+    padding-top: 25vh;
     margin: 0 auto;
     text-align: center;
     clear: both;
-    width: 33vw
-    
+    width: 33vw;
+    min-width: 300px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 #songdiv {
