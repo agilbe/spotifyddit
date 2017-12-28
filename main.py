@@ -191,7 +191,7 @@ class BaseHandler(webapp2.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        template = JINJA_ENVIRONMENT.get_template('oauth.html')
+        template = JINJA_ENVIRONMENT.get_template('index.html')
         
         # check if they are logged in
         user = self.current_user
@@ -341,7 +341,7 @@ class LogoutHandler(BaseHandler):
         self.redirect("/")
 
 '''
-idea: when rendering the songs to the oauth.html template, render them
+idea: when rendering the songs to the index.html template, render them
 directly into a form with radio buttons that the user can then select
 and add to playlist DONE
 
