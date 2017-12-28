@@ -1,3 +1,6 @@
+const PREVIEWTEXT = "Preview";
+const CANCELTEXT = "Cancel";
+
 $(function(){
     $(".previewurl" ).each(function(index) {
         //gets each class and should add an onclick with "store" attr as link to audio player
@@ -17,7 +20,7 @@ $(function(){
                     //it already exists/is open
                     $("#previewplayer").remove();
                     //set all to "Preview"
-                    $(".previewurl").text("Preview")
+                    $(".previewurl").text(PREVIEWTEXT);
                 }
                 
 
@@ -62,7 +65,7 @@ $(function(){
 
                 
                 //change text to Pause and then change function to pause
-                $(this).text("Cancel");
+                $(this).text(CANCELTEXT);
                 //can't change color when clicked, otherwise you lose the ability to change link hover/click color, etc.
                 //TODO: add some way to make the "Cancel" more noticeable
             
@@ -70,7 +73,7 @@ $(function(){
             } else {
                 console.log("removing player...")
                 $("#previewplayer").remove();
-                $(this).text("Preview");
+                $(this).text(PREVIEWTEXT);
             }
         
         });
