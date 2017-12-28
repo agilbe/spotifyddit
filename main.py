@@ -205,7 +205,7 @@ class HomeHandler(BaseHandler):
             testurls = ['https://www.reddit.com/r/EDM/comments/7i22of/show_me_the_best_three_songs_you_know/', 'https://www.reddit.com/r/EDM/comments/6v84qy/best_songs_by_the_best_artists/']
 
             tvals["error"] = None
-            if self.request.get('butt'): #lol this was supposed to be button
+            if self.request.get('ex'):
                 redditurl = testurls[randint(1, len(testurls)) - 1]
             else:
                 redditurl = self.request.get('redditinput')

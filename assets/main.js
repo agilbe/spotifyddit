@@ -9,6 +9,7 @@ $(function(){
         
         //i thought $(this).children("a") was the link?? why doesn't the next line work
         //JK FIGURED IT OUT YOU CAN'T USE .click, YOU HAVE TO USE EVENT DELEGATION i.e. .on(click)
+        $(this).text(PREVIEWTEXT);
         $(this).on('click',  function() {
             //if the player that is playing isn't of the current link
             //so a new player should overwrite the first

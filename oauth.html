@@ -17,7 +17,7 @@
           </form> 
           or
           <form id="randbox" method="get" action="" name="randomform">
-            <input class="button" type="submit" value="try me" name="butt" />
+            <input class="button" type="submit" value="try me" name="ex" />
           </form>
         </div>
         
@@ -43,7 +43,7 @@
                       <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>, 
                       {% endif %}
                     {% endfor %}
-                  </span></label><div class="previewclick">  <span class="previewurl fakelink" store="{{song.preview_url}}">Preview</span></div>
+                  </span></label><div class="previewclick">  <span class="previewurl fakelink" store="{{song.preview_url}}">preview</span></div>
                 <br/>
               </div>
               {% endfor %}
@@ -72,7 +72,7 @@
     {% endfor %}
       </ul>
     {% endif %} -->
-     
+
     {% else %}
     <div id="logindiv">  
       <p>you are not yet logged into this site</p>
