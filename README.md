@@ -1,3 +1,3 @@
 # spotifyddit
 
-[spotifinder.appspot.com](https://spotifinder.appspot.com/)
+[spotifyddit.appspot.com](https://spotifyddit.appspot.com/)
