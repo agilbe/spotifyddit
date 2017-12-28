@@ -11,7 +11,7 @@ APP_NAME = "spotifyddit"
 NUM_CHARS = 45 #for playlist name length
 
 
-import webapp2, urllib2, os, urllib, json, jinja2, logging, sys, time
+import webapp2, urllib2, urllib, json, jinja2, logging, sys, time
 import base64, Cookie, hashlib, hmac, email
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
