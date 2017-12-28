@@ -1,6 +1,12 @@
-from secrets import CLIENT_ID, CLIENT_SECRET
+import os
+if os.environ['SERVER_SOFTWARE'].startswith('Development'): #dev_appserver
+    from secrets import CLIENT_ID, CLIENT_SECRET
+    RED_URI = 'http://localhost:8080/'
+else:
+    from secretsd import CLIENT_ID, CLIENT_SECRET
+    RED_URI = 'https://spotifyddit.appspot.com/'
+    
 GRANT_TYPE = 'authorization_code'
-RED_URI = 'http://localhost:8080/'
 APP_NAME = "spotifyddit"
 NUM_CHARS = 45 #for playlist name length
 
