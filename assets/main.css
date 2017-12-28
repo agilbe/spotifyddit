@@ -8,8 +8,10 @@ body {
     color: #999999
 }
 
-a:link {
+a:link, .fakelink {
     color: green;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 /* visited link */
@@ -26,6 +28,10 @@ a:hover {
 /* a:active {
     color: green;
 } */
+
+.fakelink:hover {
+    color: lightgreen
+}
 
 #userdiv {
     float: right;
@@ -55,6 +61,19 @@ a:hover {
 #randbox, #searchbox {
     display: inline-block;
 }
+
+.button, .button>a {
+    background-color: green;
+    border: 0px solid #999999;
+    text-decoration: none;
+    border-radius: 1mm;
+    color: white;
+    display: inline-block;
+}
+
+
+
+
 
 
 

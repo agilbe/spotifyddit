@@ -1,7 +1,7 @@
 from secrets import CLIENT_ID, CLIENT_SECRET
 GRANT_TYPE = 'authorization_code'
 RED_URI = 'http://localhost:8080/'
-APP_NAME = "Spotifyddit"
+APP_NAME = "spotifyddit"
 NUM_CHARS = 45 #for playlist name length
 
 
@@ -216,14 +216,14 @@ class HomeHandler(BaseHandler):
                     if htmlstring is not None:
                         htmlstring = htmlstring.read() #handle http error 429
                         soup = BeautifulSoup(htmlstring)
-                        soupdata = soup.find("a", {"class" : "title may-blank "})
-                        articlename = soupdata.text
+                        articlename = soup.find("a", {"class" : "title may-blank "}).text
                         srname = "reddit"
-                        srlink = "-Created with " + APP_NAME + "- "
-                        for attr, item in soupdata.attrs:
-                            if attr == 'href' and '/r/' in item:
-                                srname = "r/" + item.split('/r/')[1].split('/')[0] #lmao
-                                srlink += "https://reddit.com" + item
+                        srlink = "-created with " + APP_NAME + "- "
+                        if '/r/' in redditurl:
+                            srname = "r/" + redditurl.split('/r/')[1].split('/')[0] #haha
+                        for attr, item in soup.find("input", {"id" : "shortlink-text"}).attrs:
+                            if attr == 'value':
+                                srlink += item
                         tvals["srname"] = srname
                         tvals["srlink"] = srlink
                         tvals["articlename"] = articlename

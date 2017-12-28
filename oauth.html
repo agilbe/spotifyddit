@@ -7,23 +7,23 @@
   </head>
   <body>
     {% if current_user %}
-      <div id="userdiv"><p>Logged in as {{ current_user.displayname|escape }}. <a href="/auth/logout">Log out</a></p>
+      <div id="userdiv"><p>logged in as {{ current_user.displayname|escape }} || <a href="/auth/logout">log out</a></p>
       </div>
       <div id="pagediv">  
         <div id="searchdiv">
           <form id="searchbox" method="get" action="" name="search">
-            <label for="lat">Drop a Reddit thread link here: </label><input type="text" id="redditinput" name="redditinput"/>
-            <input type="submit" value="Search" name="submit" />
+            <label for="lat">drop a link to a reddit thread here: </label><input type="text" id="redditinput" name="redditinput"/>
+            <input class="button" type="submit" value="search thread" name="submit" />
           </form> 
           or
           <form id="randbox" method="get" action="" name="randomform">
-            <input type="submit" value="Try Me" name="butt" />
+            <input class="button" type="submit" value="try me" name="butt" />
           </form>
         </div>
         
         <div id="resultdiv">
           {%if results %}
-            <p>Songs found:</p>
+            <p>songs found:</p>
             
             <form id="playlistform" method="post" action="createplaylist" name="playlistform">
             <input id="articlename" name="articlename" type="hidden" value="{{articlename}}">
@@ -43,18 +43,18 @@
                       <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>, 
                       {% endif %}
                     {% endfor %}
-                    || <span class="previewurl"><a class="preview" store="{{song.preview_url}}" href="javascript:;">Preview</a></span></span></label>
+                  </label>|| <span class="previewurl fakelink" store="{{song.preview_url}}">Preview</span></span>
                 <br/>
               </div>
               {% endfor %}
               <br/>
             </div>
             
-              <input type="submit" value="Create Playlist" name="playlistbutt" />
+              <input class="button" type="submit" value="create playlist" name="playlistbutt" />
             </form>
             <div id="playerplaceholder"></div>
           {% elif error == "reddit" %}
-          <p>Ran into an error while scraping Reddit for songs, try again!</p>
+          <p>there was an error scraping reddit for songs, try again!</p>
           {% elif error == "redditservers" %}
           <p>Something went wrong (is Reddit down?). Try again in a bit!</p>
           {% elif error == "url" %}
@@ -73,8 +73,8 @@
       
     {% else %}
     <div id="logindiv">  
-      <p>You are not yet logged into this site</p>
-      <p><a href="/auth/login">Log in to Spotify</a></p>
+      <p>you are not yet logged into this site</p>
+      <p><a href="/auth/login">log in to Spotify</a></p>
     </div>
     {% endif %}
   </body>

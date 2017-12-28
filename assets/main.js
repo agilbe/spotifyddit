@@ -6,8 +6,7 @@ $(function(){
         
         //i thought $(this).children("a") was the link?? why doesn't the next line work
         //JK FIGURED IT OUT YOU CAN'T USE .click, YOU HAVE TO USE EVENT DELEGATION i.e. .on(click)
-        $(this).children("a").on('click',  function() {
-            
+        $(this).on('click',  function() {
             //if the player that is playing isn't of the current link
             //so a new player should overwrite the first
             if ($("#previewplayer").attr("src") != $(this).attr("store")){
@@ -18,7 +17,7 @@ $(function(){
                     //it already exists/is open
                     $("#previewplayer").remove();
                     //set all to "Preview"
-                    $(".preview").text("Preview")
+                    $(".previewurl").text("Preview")
                 }
                 
 
@@ -64,12 +63,14 @@ $(function(){
                 
                 //change text to Pause and then change function to pause
                 $(this).text("Cancel");
+                //can't change color when clicked, otherwise you lose the ability to change link hover/click color, etc.
+                //TODO: add some way to make the "Cancel" more noticeable
             
             //if the player matches the current link it should be stopped
             } else {
                 console.log("removing player...")
                 $("#previewplayer").remove();
-                $(this).text("Preview")
+                $(this).text("Preview");
             }
         
         });
