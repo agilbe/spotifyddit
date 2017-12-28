@@ -12,7 +12,7 @@
       <div id="pagediv">  
         <div id="searchdiv">
           <form id="searchbox" method="get" action="" name="search">
-            <label for="lat">drop a link to a reddit thread here: </label><input type="text" id="redditinput" name="redditinput"/>
+            <label for="lat">drop a link to a reddit thread here: </label><input type="text" {% if tryagain %} value = {{tryagain}} {% endif %} id="redditinput" name="redditinput"/>
             <input class="button" type="submit" value="search thread" name="submit" />
           </form> 
           or
@@ -23,7 +23,7 @@
         
         <div id="resultdiv">
           {%if results %}
-            <p>songs found:</p>
+            <p>tracks found:</p>
             
             <form id="playlistform" method="post" action="createplaylist" name="playlistform">
             <input id="articlename" name="articlename" type="hidden" value="{{articlename}}">
@@ -43,7 +43,7 @@
                       <a href="{{artist.external_urls.spotify}}">{{artist.name}}</a>, 
                       {% endif %}
                     {% endfor %}
-                  </span></label><div class="previewclick">  <span class="previewurl fakelink" store="{{song.preview_url}}">PREVIEW</span></div>
+                  </span></label><div class="previewclick">  <span class="previewurl fakelink" store="{{song.preview_url}}">Preview</span></div>
                 <br/>
               </div>
               {% endfor %}
@@ -54,11 +54,13 @@
             </form>
             <div id="playerplaceholder"></div>
           {% elif error == "reddit" %}
-          <p>there was an error scraping reddit for songs, try again!</p>
+            <p>there was an error scraping reddit for songs, try again!</p>
           {% elif error == "redditservers" %}
-          <p>Something went wrong (is Reddit down?). Try again in a bit!</p>
+            <p>something went wrong (is reddit down?). try again in a bit!</p>
           {% elif error == "url" %}
-            <p>enter a valid URL</p>
+            <p>enter a valid reddit url</p>
+          {% elif error == "loggedout" %}
+            <p>your session may have expired. try logging out and logging in again!</p>
           {% endif %}
         </div>
       </div>

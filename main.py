@@ -214,7 +214,7 @@ class HomeHandler(BaseHandler):
                 try: 
                     htmlstring = safeGet(redditurl)
                     if htmlstring is not None:
-                        htmlstring = htmlstring.read() #handle http error 429
+                        htmlstring = htmlstring.read()
                         soup = BeautifulSoup(htmlstring)
                         articlename = soup.find("a", {"class" : "title may-blank "}).text
                         srname = "reddit"
@@ -227,15 +227,20 @@ class HomeHandler(BaseHandler):
                         tvals["srname"] = srname
                         tvals["srlink"] = srlink
                         tvals["articlename"] = articlename
-                        songlist = [item['href'].encode('utf-8') for item in soup.findAll('a', href=True) if 'open.spotify.com/track' in item['href']]
-                        #get song id from url and populate list of song instances
-                        newsonglist = [Song(json.loads(spotifyurlfetch('https://api.spotify.com/v1/tracks/' + track.split('?')[0].split('/')[-1], user.access_token))) for track in songlist]
-                        if len (newsonglist):
-                            tvals["results"] = newsonglist
+                        try:
+                            songlist = [item['href'].encode('utf-8') for item in soup.findAll('a', href=True) if 'open.spotify.com/track' in item['href']]
+                            #get song id from url and populate list of song instances
+                            newsonglist = [Song(json.loads(spotifyurlfetch('https://api.spotify.com/v1/tracks/' + track.split('?')[0].split('/')[-1], user.access_token))) for track in songlist]
+                            if len (newsonglist):
+                                tvals["results"] = newsonglist
+                        except:
+                            tvals["results"] = None
+                            tvals["error"] = "loggedout"
                     else: 
                         logging.info("error scraping reddit")
                         tvals["results"] = None
                         tvals["error"] = "reddit"
+                        tvals["tryagain"] = redditurl
                 except:
                     logging.info("reddit could be down or could be an error in my code, who knows?")
                     tvals["results"] = None

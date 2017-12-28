@@ -40,11 +40,12 @@ a:hover {
 
 .previewsong {
     display: inline-block;
-    width: 70%;
+    width: 72%;
 }
 
 #userdiv {
     float: right;
+    padding-right: 25px;
 }
 
 #resultdiv, #searchdiv {
