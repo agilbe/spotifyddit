@@ -1,3 +1,5 @@
+#built on top of starter code by Sean Munson
+
 import os
 if os.environ['SERVER_SOFTWARE'].startswith('Development'): #dev_appserver
     from secrets import CLIENT_ID, CLIENT_SECRET
@@ -274,10 +276,10 @@ class LoginHandler(BaseHandler):
         # did we get a successful login back?
         args = {}
         args['client_id']= CLIENT_ID
-        from google.appengine.api import app_identity
-        server_url = app_identity
+        #from google.appengine.api import app_identity
+        #server_url = app_identity
+        #logging.info(server_url)
         logging.info("@@@@@@@@@@@@@@@@")
-        logging.info(server_url)
         verification_code = self.request.get("code")
         logging.info(self.request)
         if '?code=' in self.request.referrer:
@@ -327,6 +329,7 @@ class LoginHandler(BaseHandler):
             
             args['redirect_uri']=RED_URI
             args['response_type']="code"
+            args['show_dialog']="true"
             #ask for the necessary permissions - see details at https://developer.spotify.com/web-api/using-scopes/
             args['scope']="user-library-modify playlist-modify-private playlist-modify-public playlist-read-collaborative"
             
@@ -337,7 +340,8 @@ class LoginHandler(BaseHandler):
 
 class LogoutHandler(BaseHandler):
     def get(self):
-        set_cookie(self.response, "spotify_user", "", expires=time.time() - 86400)
+        user = self.current_user
+        set_cookie(self.response, "spotify_user", str(user.uid), expires=time.time() - 86400)
         self.redirect("/")
 
 '''
